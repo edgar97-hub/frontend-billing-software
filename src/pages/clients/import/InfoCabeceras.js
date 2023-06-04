@@ -25,7 +25,7 @@ export const InfoCabeceras = ({ open, handleClose }) => {
               <b style={{ textTransform: 'uppercase' }}>Nombre:</b>
               <span style={{ fontSize: '13px' }}>(Requerido)</span>
             </div>
-            <p style={{ fontSize: '13px' }}>Tipo de cliente</p>
+            <p style={{ fontSize: '13px' }}>nombres del cliente</p>
           </Typography>
           <Typography>
             <div>
@@ -47,12 +47,21 @@ export const InfoCabeceras = ({ open, handleClose }) => {
           </Typography>
           <Typography>
             <div>
+              <b style={{ textTransform: 'uppercase' }}>Tipo de documento:</b>{' '}
+              <span style={{ fontSize: '13px' }}>(Requerido)</span>
+            </div>
+            <p style={{ fontSize: '13px' }}>
+              En el tipo de documento se puede ingresar DNI, RUC, Cédula de
+              extranjería 
+            </p>
+          </Typography>
+          <Typography>
+            <div>
               <b style={{ textTransform: 'uppercase' }}>Número de documento:</b>{' '}
               <span style={{ fontSize: '13px' }}>(Requerido)</span>
             </div>
             <p style={{ fontSize: '13px' }}>
-              El número de documento puede ser un DNI o RUC. Si el número
-              documento existe en el sistema, se descartara ese cliente.
+              el número de documento debe ser acorde al tipo de documento,
             </p>
           </Typography>
           <Typography>
@@ -61,8 +70,7 @@ export const InfoCabeceras = ({ open, handleClose }) => {
               <span style={{ fontSize: '13px' }}>(Requerido)</span>
             </div>
             <p style={{ fontSize: '13px' }}>
-              Correo electrónico del cliente. Solo se puede ingresar un correo
-              electrónico.
+              solo se permite un correo electrónico
             </p>
           </Typography>
 
@@ -71,9 +79,7 @@ export const InfoCabeceras = ({ open, handleClose }) => {
               <b style={{ textTransform: 'uppercase' }}>Teléfono:</b>
               <span style={{ fontSize: '13px' }}>(Requerido)</span>
             </div>
-            <p style={{ fontSize: '13px' }}>
-              Teléfono del cliente. Solo se puede ingresar un teléfono.
-            </p>
+            <p style={{ fontSize: '13px' }}>solo se permite un Teléfono</p>
           </Typography>
         </Box>
       </DialogContent>
