@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import Notification from '../../toolsForm/Notification'
 import ConfirmDialog from '../../toolsForm/ConfirmDialog'
+import axios from 'axios'
 
 const defaultTheme = createTheme()
 
@@ -37,39 +38,30 @@ export default function SignInSide() {
     try {
       setLoading(true)
       var values = {
-        documentNumber: data.get('documentNumber'),
+        email: data.get('email'),
         password: data.get('password'),
       }
       console.log(values)
-      var localhost = "http://localhost:5001"
-      var remoteServer = "https://node-app-fiber-peru.onrender.com"
-      const loggedInResponse = await fetch(
-        remoteServer + '/api/v1/login',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(values),
-        }
-      )
-      const response = await loggedInResponse.json()
+      var localhost = 'http://localhost:5001'
+      var remoteServer = 'https://node-app-fiber-peru.onrender.com'
 
-      if (response.success) {
+     
+      var response = await axios.post(localhost + '/auth/login', values)
+      console.log(response.data)
+      if (response.data.token) {
         setNotify({
           isOpen: true,
           message: 'guardado con éxito',
           type: 'success',
         })
-        localStorage.setItem('token', response.token)
-        navigate('/dashboard')
-        console.log(response)
-
+        localStorage.setItem('token', response.data.token)
+        navigate('/usuarios')
       } else {
         setNotify({
           isOpen: true,
           message: 'Credenciales incorrectas',
           type: 'error',
         })
-        console.log(response)
       }
     } catch (error) {
       console.log(error)
@@ -79,7 +71,7 @@ export default function SignInSide() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: '100vh',  }}>
+      <Grid container component="main" sx={{ height: '100vh' }}>
         {/* <CssBaseline /> */}
         {/* <Grid
           item
@@ -98,7 +90,7 @@ export default function SignInSide() {
             backgroundPosition: 'center',
           }}
         /> */}
-        <Grid item xs={12} sm={12} md={15} component={Paper} >
+        <Grid item xs={12} sm={12} md={15} component={Paper}>
           <Box
             sx={{
               my: 8,
@@ -197,7 +189,6 @@ export default function SignInSide() {
               >
                 Ingresar
               </Button>
-               
             </Box>
           </Box>
         </Grid>

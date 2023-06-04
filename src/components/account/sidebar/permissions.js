@@ -9,51 +9,55 @@
 // import IconNuevaVenta from "../../assets/images/nueva-venta.png";
 
 export const permissions = [
-	{
-		title: "usuarios",
-		path: "/usuarios",
-		// icon: Isettings,
-		// bgColor: "hsl(0,0%,73%)",
-		// bgColorHover: "hsl(0,0%,83%)",
-		// size: "contain",
-		// position: "50% 30px",
-		checks: [
-			{
-				title: "administracion",
-			},
-			{
-				id: "personal-usuario",
-				selectedIds: [],
-				title: "personal-usuario",
-				children: [
-					{
-						id: "usuarios",
-						title: "usuarios",
-					},
-					{
-						id: "roles",
-						title: "roles",
-					},
-					{
-						id: "documentos-usuario",
-						title: "documentos-usuario",
-					},
-				],
-			},
-		],
-	},
-
-	{
-		title: "contacto",
-		path: "/consultas",
-		// icon: Isettings,
-		// bgColor: "hsl(0,0%,73%)",
-		// bgColorHover: "hsl(0,0%,83%)",
-		// size: "contain",
-		// position: "50% 30px",
-		 
-	},
-
-
-
-];
+  {
+    title: 'usuarios',
+    path: '/usuarios',
+    // icon: Isettings,
+    // bgColor: "hsl(0,0%,73%)",
+    // bgColorHover: "hsl(0,0%,83%)",
+    // size: "contain",
+    // position: "50% 30px",
+    checks: [
+      {
+        title: 'administracion',
+      },
+      {
+        id: 'personal-usuario',
+        selectedIds: [],
+        title: 'personal-usuario',
+        children: [
+          {
+            id: 'usuarios',
+            title: 'usuarios',
+          },
+          {
+            id: 'roles',
+            title: 'roles',
+          },
+          {
+            id: 'documentos-usuario',
+            title: 'documentos-usuario',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'clientes',
+    path: '/clientes',
+    // icon: Isettings,
+    // bgColor: "hsl(0,0%,73%)",
+    // bgColorHover: "hsl(0,0%,83%)",
+    // size: "contain",
+    // position: "50% 30px",
+  },
+  {
+    title: 'planes-internet',
+    path: '/planes-internet',
+    // icon: Isettings,
+    // bgColor: "hsl(0,0%,73%)",
+    // bgColorHover: "hsl(0,0%,83%)",
+    // size: "contain",
+    // position: "50% 30px",
+  },
+]

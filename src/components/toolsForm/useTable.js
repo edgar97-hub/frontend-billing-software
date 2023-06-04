@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 //import { makeStyles } from '@material-ui/core';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
-import TableSortLabel from '@mui/material/TableSortLabel';
-import TableHead from '@mui/material/TableHead';
-import Table from '@mui/material/Table';
-import TableCell from '@mui/material/TableCell';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel'
+import TableHead from '@mui/material/TableHead'
+import Table from '@mui/material/Table'
+import TableCell from '@mui/material/TableCell'
+import TablePagination from '@mui/material/TablePagination'
+import TableRow from '@mui/material/TableRow'
 
 const useStyles = makeStyles((theme) => ({
   table: {
-    marginTop: "20px",
-    width: '100%',
+    marginTop: '20px',
+
+    //border: '3px solid forestgreen',
+
+    //minWidth: '80%',
     '& thead th': {
       fontWeight: '600',
-      color: "white",
-      backgroundColor: "#49a4eb",
+      color: 'white',
+      backgroundColor: '#49a4eb',
     },
-    
+    '& thead :first-child': {
+      borderTopLeftRadius: "9px"
+
+    },
+    '& thead :last-child': {
+      borderTopRightRadius: "9px"
+    },
+
     '& tbody td': {
       fontWeight: '300',
     },
@@ -26,34 +36,35 @@ const useStyles = makeStyles((theme) => ({
       //backgroundColor: '#fffbf2',
       cursor: 'pointer',
     },
+    //overflowX: "auto"
   },
-}));
+}))
 
 export default function useTable(records, headCells, filterFn) {
-  const classes = useStyles();
+  const classes = useStyles()
 
-  const pages = [5, 10, 25];
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
-  const [order, setOrder] = useState();
-  const [orderBy, setOrderBy] = useState();
+  const pages = [5, 10, 25]
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(pages[page])
+  const [order, setOrder] = useState()
+  const [orderBy, setOrderBy] = useState()
 
   const TblContainer = (props) => (
     <Table className={classes.table} size={props.size} ref={props.referencia}>
       {props.children}
     </Table>
-  );
+  )
 
   const TblHead = (props) => {
     const handleSortRequest = (cellId) => {
-      const isAsc = orderBy === cellId && order === 'asc';
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(cellId);
-    };
+      const isAsc = orderBy === cellId && order === 'asc'
+      setOrder(isAsc ? 'desc' : 'asc')
+      setOrderBy(cellId)
+    }
 
     return (
       <TableHead>
-        <TableRow>
+        <TableRow >
           {headCells.map((headCell) => (
             <TableCell
               key={headCell.id}
@@ -66,7 +77,7 @@ export default function useTable(records, headCells, filterFn) {
                   active={orderBy === headCell.id}
                   direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={() => {
-                    handleSortRequest(headCell.id);
+                    handleSortRequest(headCell.id)
                   }}
                 >
                   {headCell.label}
@@ -76,17 +87,17 @@ export default function useTable(records, headCells, filterFn) {
           ))}
         </TableRow>
       </TableHead>
-    );
-  };
+    )
+  }
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+    setPage(newPage)
+  }
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
 
   const TblPagination = () => (
     <TablePagination
@@ -98,45 +109,45 @@ export default function useTable(records, headCells, filterFn) {
       onPageChange={handleChangePage}
       onRowsPerPageChange={handleChangeRowsPerPage}
     />
-  );
+  )
 
   function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
+    const stabilizedThis = array.map((el, index) => [el, index])
     stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
+      const order = comparator(a[0], b[0])
+      if (order !== 0) return order
+      return a[1] - b[1]
+    })
+    return stabilizedThis.map((el) => el[0])
   }
 
   function getComparator(order, orderBy) {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
+      : (a, b) => -descendingComparator(a, b, orderBy)
   }
 
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
-      return -1;
+      return -1
     }
     if (b[orderBy] > a[orderBy]) {
-      return 1;
+      return 1
     }
-    return 0;
+    return 0
   }
 
   const recordsAfterPagingAndSorting = () => {
     return stableSort(
       filterFn.fn(records),
       getComparator(order, orderBy)
-    ).slice(page * rowsPerPage, (page + 1) * rowsPerPage);
-  };
+    ).slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+  }
 
   return {
     TblContainer,
     TblHead,
     TblPagination,
     recordsAfterPagingAndSorting,
-  };
+  }
 }

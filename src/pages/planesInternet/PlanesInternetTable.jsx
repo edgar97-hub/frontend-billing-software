@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import UserDialogForm from './UserDialogForm';
+import UserDialogForm from './PlanesInternetTableDialogForm'
 import useTable from '../../components/toolsForm/useTable'
 import Controls from '../../components/controls/Controls'
 import SearchIcon from '@mui/icons-material/Search'
@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add'
 import Popup from '../../components/toolsForm/Popup'
 import Notification from '../../components/toolsForm/Notification'
 import ConfirmDialog from '../../components/toolsForm/ConfirmDialog'
-
+import Box from '@mui/material/Box'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import TableBody from '@mui/material/TableBody'
@@ -17,36 +17,43 @@ import Toolbar from '@mui/material/Toolbar'
 import InputAdornment from '@mui/material/InputAdornment'
 import { makeStyles } from '@mui/styles'
 import Paper from '@mui/material/Paper'
+import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
-  pageContent: {
-    // margin: theme.spacing(1),
-    // padding: theme.spacing(1),
-    // padding: '0 30px 10px 20px',
-    width: '70%',
-     border: "2px solid forestgreen",
-    marginLeft:"15%",
-    display:"flex",
-    flexDirection:"column",
-    alignItems:"end",
-    justifyContent:"center",
+  roots: {
+    width: '100%',
+    //border: '3px solid forestgreen',
+    marginLeft: '20%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'end',
+    justifyContent: 'center',
     //gap:5,
-    //padding:"40px"
+    marginLeft: '40px',
+    marginRight: '40px',
+    //overflow: "scroll",
+    //scrollbarColor: "red orange",
   },
-  allUsers: {
-    //right: '10px'
-    //marginRight:"80px",
-    marginLeft: '20px',
-    marginBottom: '10px',
+
+  root: {
+    width: '70%',
+    marginLeft: '40%',
+    //marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
+    //border: '3px solid forestgreen',
+    marginLeft: '20%',
+    //marginRight: '40px',
+  },
+  table: {
+    minWidth: 100,
   },
 }))
 
 const headCells = [
-  { id: 'documenttype', label: 'tipo de documento' },
-  { id: 'Documentnumber', label: 'Número de documento' },
-  { id: 'email', label: 'Email' },
-  { id: 'fullName', label: 'Nombre completo' },
-  { id: 'mobile', label: 'Número de teléfono' },
+  { id: 'planType', label: 'tipo plan' },
+  { id: 'description', label: 'Descripcion' },
+  { id: 'price', label: 'Precio' },
+  { id: 'mbps', label: 'Mbps' },
   { id: 'actions', label: 'Actions', disableSorting: true },
 ]
 
@@ -72,31 +79,46 @@ export default function UserTable() {
     subTitle: '',
   })
 
-  const [roles, setRoles] = useState([])
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-
-
-    var localhost = "http://localhost:5001"
-    var remoteServer = "https://node-app-fiber-peru.onrender.com"
+  function getData() {
+    var localhost = 'http://localhost:5001'
+    var remoteServer = 'https://node-app-fiber-peru.onrender.com'
     var token = localStorage.getItem('token')
-     async function getUsers(){
-      const loggedInResponse = await fetch(
-        remoteServer + '/api/v1/users',
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+token },
+
+    // axios
+    //   .get(localhost + '/api/v1/planes-internet', value{
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     console.log(response)
+    //     if (response.data) {
+    //       setRecords(response.data)
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
+    axios
+      .get(localhost + '/api/v1/planes-internet', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response)
+        if (response.data) {
+          setRecords(response.data)
         }
-      )
-      const response = await loggedInResponse.json()
-      console.log(response)
-    setRecords(response.userMap);
-
-    }
-    getUsers()
-
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+  useEffect(() => {
+    getData()
   }, [])
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } =
@@ -117,37 +139,64 @@ export default function UserTable() {
 
   async function addOrEdit(value, resetForm) {
     setLoading(true)
-    if (value.id == 0) {
-      try {
-        await postData(
-          'https://us-central1-daphtech-31758.cloudfunctions.net/user',
-          value
+    try {
+      if (value.id == 0) {
+        var localhost = 'http://localhost:5001'
+        var token = localStorage.getItem('token')
+        const loggedInResponse = await fetch(
+          localhost + '/api/v1/planes-internet',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(value),
+          }
         )
-      } catch (error) {
-        alert(error)
-      }
-    } else {
-      try {
-        await updateData(
-          'https://us-central1-daphtech-31758.cloudfunctions.net/user',
-          value
+        const loggedIn = await loggedInResponse.json()
+        console.log(loggedIn)
+      } else {
+        console.log(value)
+        var localhost = 'http://localhost:5001'
+        var token = localStorage.getItem('token')
+        const loggedInResponse = await fetch(
+          localhost + '/api/v1/planes-internet',
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(value),
+          }
         )
+        const loggedIn = await loggedInResponse.json()
+        console.log(loggedIn)
+        if (loggedIn.error) {
+          alert(loggedIn.error)
+        }
         resetForm()
         setRecordForEdit(null)
         setOpenPopup(false)
-      } catch (error) {
-        console.log(error)
       }
+      setLoading(false)
+      resetForm()
+      setRecordForEdit(null)
+      setOpenPopup(false)
+      setNotify({
+        isOpen: true,
+        message: 'guardado con éxito',
+        type: 'success',
+      })
+      getData()
+    } catch (error) {
+      setNotify({
+        isOpen: true,
+        message: error,
+        type: 'error',
+      })
     }
-    setLoading(false)
-    resetForm()
-    setRecordForEdit(null)
-    setOpenPopup(false)
-    setNotify({
-      isOpen: true,
-      message: 'guardado con éxito',
-      type: 'success',
-    })
   }
 
   const recordEdit = (item) => {
@@ -155,17 +204,30 @@ export default function UserTable() {
     setOpenPopup(true)
   }
 
-  async function onDelete(item) {
+  async function onDelete(value) {
     setLoading(true)
     setConfirmDialog({
       ...confirmDialog,
       isOpen: false,
     })
     try {
-      var response = await deleteData(
-        'https://us-central1-daphtech-31758.cloudfunctions.net/user',
-        item
+      console.log(value)
+      var localhost = 'http://localhost:5001'
+      var token = localStorage.getItem('token')
+      const loggedInResponse = await fetch(
+        localhost + '/api/v1/planes-internet',
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(value),
+        }
       )
+      const loggedIn = await loggedInResponse.json()
+      console.log(loggedIn)
+      getData()
     } catch (error) {
       console.log(error)
     }
@@ -218,23 +280,23 @@ export default function UserTable() {
   }
 
   return (
-    <>
-      <Paper className={classes.pageContent}>
-        <Toolbar sx={{
-            display:"flex",
-            alignItems:"center",
-            justifyContent:"center",
+    <Box>
+      <Box className={classes.root}>
+        <Toolbar
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             //border: "2px solid forestgreen",
-            width:"100%",
-
-
-            }}>
+            width: '100%',
+          }}
+        >
           <Controls.Input
             size="small"
-            label="Buscar usuarios"
+            label="buscar"
             sx={{
               //width: { xs: 400, sm: 280, md: 600, lg: 700 },
-              width: "50%",
+              width: '50%',
             }}
             InputProps={{
               startAdornment: (
@@ -246,11 +308,12 @@ export default function UserTable() {
             onChange={handleSearch}
           />
           <Controls.Button
-            variant="outlined"sx={{
+            variant="outlined"
+            sx={{
               //width: { xs: 400, sm: 280, md: 600, lg: 700 },
               margin: 1,
-              width: "7%",
-                paddingLeft:"29px"
+              width: '7%',
+              paddingLeft: '29px',
             }}
             startIcon={<AddIcon />}
             onClick={() => {
@@ -259,20 +322,18 @@ export default function UserTable() {
             }}
           />
         </Toolbar>
-        <TblContainer size="small">
+        <TblContainer className={classes.table} size="small">
           <TblHead />
           <TableBody>
             {recordsAfterPagingAndSorting()?.map((item) => (
-              <TableRow key={item.documenttype}>
-                 <TableCell>{item.documenttype}</TableCell>
-                <TableCell>{item.documentnumber}</TableCell>
-                <TableCell>{item.email}</TableCell>
-                <TableCell>{item.fullName}</TableCell>
-                <TableCell>{item.telefono}</TableCell>
-               
-
-                {/* <TableCell>{item.role}</TableCell> */}
-                <TableCell>
+              <TableRow key={item._id}>
+                <TableCell>{item.planType}</TableCell>
+                <TableCell>{item.description}</TableCell>
+                <TableCell>{item.price}</TableCell>
+                <TableCell>{item.mbps}</TableCell>
+                <TableCell style={{
+                  display:"flex",flexDirection:"row"
+                }}>
                   <Controls.ActionButton
                     onClick={async () => {
                       recordEdit(item)
@@ -301,7 +362,7 @@ export default function UserTable() {
           </TableBody>
         </TblContainer>
         <TblPagination />
-      </Paper>
+      </Box>
       <Popup
         title="Formulario de usuario"
         openPopup={openPopup}
@@ -318,6 +379,6 @@ export default function UserTable() {
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
       />
-    </>
+    </Box>
   )
 }

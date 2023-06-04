@@ -12,7 +12,9 @@ import {
   Users,
   Inquiries,
   Login,
-  NewSale
+  NewSale,
+  Clients,
+  PlanesInternet,
 } from './pages'
 import Protected from './protectRoute/Protected'
 
@@ -22,22 +24,46 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/usuarios" element={
-          <Protected >
-            <Users />
-          </Protected>
-        } />
-        <Route path="/consultas" element={
-          <Protected >
-            <Inquiries />
-          </Protected>
-        } />
-          <Route path="/nueva-venta" element={
-          <Protected >
-            <NewSale />
-          </Protected>
-        } />
-
+        <Route
+          path="/usuarios"
+          element={
+            <Protected>
+              <Users />
+            </Protected>
+          }
+        />
+        <Route
+          path="/consultas"
+          element={
+            <Protected>
+              <Inquiries />
+            </Protected>
+          }
+        />
+        <Route
+          path="/nueva-venta"
+          element={
+            <Protected>
+              <NewSale />
+            </Protected>
+          }
+        />
+        <Route
+          path="/clientes"
+          element={
+            <Protected>
+              <Clients />
+            </Protected>
+          }
+        />
+        <Route
+          path="/planes-internet"
+          element={
+            <Protected>
+              <PlanesInternet />
+            </Protected>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )
