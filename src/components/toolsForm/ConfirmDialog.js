@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 // import {
 //   Dialog,
 //   DialogTitle,
@@ -13,20 +13,17 @@ import {
   DialogContent,
   DialogActions,
   Typography,
-} from '@mui/material';
-import Controls from '../controls/Controls';
-//import NotListedLocationIcon from '@material-ui/icons/NotListedLocation';
-import NotListedLocationIcon from '@mui/icons-material/NotListedLocation';
-//import { makeStyles } from '@material-ui/core';
-import { makeStyles } from '@mui/styles';
-
-import IconButton from '@mui/material/IconButton';
-
+} from '@mui/material'
+import Controls from '../controls/Controls'
+import NotListedLocationIcon from '@mui/icons-material/NotListedLocation'
+import { makeStyles } from '@mui/styles'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
 const useStyles = makeStyles((theme) => ({
   dialog: {
-    //padding: theme.spacing(2),
-    position: 'absolute',
-    //top: theme.spacing(5),
+    //border: '3px solid rgb(177, 175, 175)',
+
+   
   },
   dialogTitle: {
     textAlign: 'center',
@@ -35,29 +32,40 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   dialogAction: {
-    justifyContent: 'center',
+    '& .MuiDialogActions-spacing': {
+      //width: '100%',
+      //border: '1px solid rgb(177, 175, 175)',
+    },
+
   },
   titleIcon: {
-    //backgroundColor: theme.palette.secondary.light,
-    //color: theme.palette.secondary.main,
+   // backgroundColor: 'rgb(177, 175, 175)',
+    //color: 'rgb(177, 175, 175)',
     '&:hover': {
       //backgroundColor: theme.palette.secondary.light,
       cursor: 'default',
     },
     '& .MuiSvgIcon-root': {
       fontSize: '6rem',
+      color: '#c91607  ',
+
     },
   },
-}));
+  
+}))
 
 export default function ConfirmDialog(props) {
-  const { confirmDialog, setConfirmDialog } = props;
-  const classes = useStyles();
+  const { confirmDialog, setConfirmDialog } = props
+  const classes = useStyles()
 
   return (
-    <Dialog open={confirmDialog.isOpen} classes={{ paper: classes.dialog }}>
+    <Dialog
+      open={confirmDialog.isOpen}
+      className={classes.dialog}
+      onClose={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+    >
       <DialogTitle className={classes.dialogTitle}>
-        <IconButton disableRipple className={classes.titleIcon}>
+        <IconButton  className={classes.titleIcon}>
           <NotListedLocationIcon />
         </IconButton>
       </DialogTitle>
@@ -69,14 +77,16 @@ export default function ConfirmDialog(props) {
         <Controls.Button
           text="No"
           //color="default"
+          variant="text"
           onClick={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
         />
         <Controls.Button
-          text="Yes"
+          text="Si"
           //color="secondary"
+          variant="text"
           onClick={confirmDialog.onConfirm}
         />
       </DialogActions>
     </Dialog>
-  );
+  )
 }

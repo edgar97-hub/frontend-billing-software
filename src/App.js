@@ -15,6 +15,8 @@ import {
   NewSale,
   Clients,
   PlanesInternet,
+  ImClients,
+  Administration,
 } from './pages'
 import Protected from './protectRoute/Protected'
 
@@ -22,7 +24,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        {/* <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route
           path="/usuarios"
@@ -47,7 +49,7 @@ function App() {
               <NewSale />
             </Protected>
           }
-        />
+        /> */}
         <Route
           path="/clientes"
           element={
@@ -64,6 +66,8 @@ function App() {
             </Protected>
           }
         />
+        <Route path="/import" element={<ImClients />} />
+        <Route path="/administracion" element={<Administration />} />
       </Routes>
     </BrowserRouter>
   )

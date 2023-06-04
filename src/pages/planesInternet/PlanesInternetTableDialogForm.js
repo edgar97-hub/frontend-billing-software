@@ -27,13 +27,7 @@ const initialFValues = {
 }
 
 export default function UserDialogForm(props) {
-  const {
-    addOrEdit,
-    recordForEdit,
-    roles,
-    loading,
-    getAllCompaniesAndBranches,
-  } = props
+  const { addOrEdit, recordForEdit, loading } = props
   const [showPassword, setShowPassword] = useState(false)
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
@@ -65,7 +59,6 @@ export default function UserDialogForm(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // console.log('data');
     if (validate()) {
       addOrEdit(values, resetForm)
     }
@@ -80,7 +73,6 @@ export default function UserDialogForm(props) {
   }, [recordForEdit])
 
   return (
-    // <Form onSubmit={handleSubmit}>
     <Box sx={{ flexGrow: 1 }}>
       <Grid
         container
@@ -107,9 +99,6 @@ export default function UserDialogForm(props) {
             value={values.description}
             onChange={handleInputChange}
             error={errors.description}
-            // sx={{
-            //   margin: 1,
-            // }}
           />
         </Grid>
         <Grid item xs={6}>
@@ -120,9 +109,6 @@ export default function UserDialogForm(props) {
             value={values.price}
             onChange={handleInputChange}
             error={errors.price}
-            // sx={{
-            //   margin: 1,
-            // }}
           />
         </Grid>
         <Grid item xs={6}>
@@ -133,128 +119,48 @@ export default function UserDialogForm(props) {
             value={values.mbps}
             onChange={handleInputChange}
             error={errors.mbps}
-            // sx={{
-            //   margin: 1,
-            // }}
           />
         </Grid>
-        <Grid container justifyContent="center" direction="row" alignItems="center" spacing={2}>
-          <Grid item xs={3}>
-            <Controls.Button
-              type="submit"
-              text="Submit"
-              size="small"
-              loading={
-                loading && (
-                  <CircularProgress
-                    size={40}
-                    style={{ position: 'absolute' }}
-                  />
-                )
-              }
-              disabled={loading}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Controls.Button
-              type="submit"
-              text="Submit"
-              size="small"
-              loading={
-                loading && (
-                  <CircularProgress
-                    size={40}
-                    style={{ position: 'absolute' }}
-                  />
-                )
-              }
-              disabled={loading}
-            />
-          </Grid>
-          {/* <Controls.Button
-            text="Reset"
-            size="small"
-            color="default"
-            onClick={resetForm}
-          /> */}
-        </Grid>
-        {/* <Grid item xs={6} sm={10} ml={5}>
-        <Controls.Input
-          name="planType"
-          size="small"
-          label="tipo plan"
-          value={values.planType}
-          onChange={handleInputChange}
-          error={errors.planType}
-          // sx={{
-          //   margin: 1,
-          // }}
-        />
-        <Controls.Input
-          name="description"
-          size="small"
-          label="descripcion"
-          value={values.description}
-          onChange={handleInputChange}
-          error={errors.description}
-          // sx={{
-          //   margin: 1,
-          // }}
-        />
-        <Controls.Input
-          label="precio"
-          name="price"
-          size="small"
-          value={values.price}
-          onChange={handleInputChange}
-          error={errors.price}
-          // sx={{
-          //   margin: 1,
-          // }}
-        />
-        <Controls.Input
-          label="mbps"
-          name="mbps"
-          size="small"
-          value={values.mbps}
-          onChange={handleInputChange}
-          error={errors.mbps}
-          // sx={{
-          //   margin: 1,
-          // }}
-        /> 
-        <div
-          style={{
-            margin: 1,
-          }}
+        <Grid
+          container
+          justifyContent="center"
+          direction="row"
+          alignItems="center"
+          //spacing={5}
         >
-          <Controls.Button
-            style={{
-              margin: 3,
-            }}
-            type="submit"
-            text="Submit"
-            size="small"
-            loading={
-              loading && (
-                <CircularProgress size={40} style={{ position: 'absolute' }} />
-              )
-            }
-            disabled={loading}
-          />
-          <Controls.Button
-            style={{
-              margin: 3,
-            }}
-            text="Reset"
-            size="small"
-            color="default"
-            onClick={resetForm}
-          />
-        </div>
-      </Grid>*/}
+          <Grid item xs={2} md={4} lg={4}>
+            <Controls.Button
+              style={{
+                margin: 10,
+              }}
+              type="submit"
+              text="Enviar"
+              size="small"
+              onClick={handleSubmit}
+              loading={
+                loading && (
+                  <CircularProgress
+                    size={40}
+                    style={{ position: 'absolute' }}
+                  />
+                )
+              }
+              disabled={loading}
+            />
+          </Grid>
+          <Grid item xs={6} md={9} lg={3}>
+            <Controls.Button
+              style={{
+                margin: 10,
+              }}
+              text="Reset"
+              size="small"
+              color="default"
+              onClick={resetForm}
+            />
+          </Grid>
+        </Grid>
       </Grid>
     </Box>
-    // </Form>
   )
 }

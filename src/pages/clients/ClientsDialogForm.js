@@ -10,12 +10,12 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import InputLabel from '@mui/material/InputLabel'
-
-const genderItems = [
-  { id: 'male', title: 'Masculino' },
-  { id: 'female', title: 'Femenino' },
-  { id: 'other', title: 'Otro' },
-]
+import Box from '@mui/material/Box'
+import dayjs from 'dayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import TextField from '@mui/material/TextField'
 
 const initialFValues = {
   id: 0,
@@ -23,13 +23,14 @@ const initialFValues = {
   clientType: '',
   address: '',
   district: '',
+  startDate: new Date(),
   documentType: '',
   documentNumber: '',
   telephone: '',
   email: '',
   plan: '',
   observations: '',
-  state: '',
+  state: false,
 }
 
 export default function UserDialogForm(props) {
@@ -94,7 +95,8 @@ export default function UserDialogForm(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // console.log('data');
+    console.log(values, errors)
+
     if (validate()) {
       addOrEdit(values, resetForm)
     }
@@ -109,154 +111,180 @@ export default function UserDialogForm(props) {
   }, [recordForEdit])
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Grid container spacing={2} direction="row" justifyContent="center">
-        <Grid item xs={6} sm={10}>
-           
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid
+        container
+        spacing={2}
+        direction="column"
+        justifyContent="center"
+        //alignItems="center"
+      >
+        <Grid
+          item
+          xs={6}
+          // md={2}
+          // lg={7}
+          style={
+            {
+              //marginTop: 10,
+              //border: '1px solid blue',
+            }
+          }
+        >
           <Controls.Input
+            fullWidth
             name="fullName"
             size="small"
             label="Nombre completo"
             value={values.fullName}
             onChange={handleInputChange}
             error={errors.fullName}
-            // sx={{
-            //   margin: 1,
-            // }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
+            fullWidth
             name="clientType"
             size="small"
             label="Tipo cliente"
             value={values.clientType}
             onChange={handleInputChange}
             error={errors.clientType}
-            // sx={{
-            //   margin: 1,
-            // }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
-            label="Direcion"
+            fullWidth
+            label="Direccion"
             name="address"
             size="small"
             value={values.address}
             onChange={handleInputChange}
             error={errors.address}
-            sx={{
-              margin: 1,
-            }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
+            fullWidth
             label="Distrito"
             name="district"
             size="small"
             value={values.district}
             onChange={handleInputChange}
             error={errors.district}
-            sx={{
-              margin: 1,
-            }}
-          /> 
+          />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.DatePicker
             label="Fecha de inicio"
             name="startDate"
             size="small"
-            value={values.startDate}
+            value={dayjs(values.startDate)}
             onChange={handleInputChange}
             error={errors.startDate}
-            sx={{
-              margin: 1,
-            }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
+            fullWidth
             label="Tipo documento"
             name="documentType"
             size="small"
             value={values.documentType}
             onChange={handleInputChange}
             error={errors.documentType}
-            sx={{
-              margin: 1,
-            }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
+            fullWidth
             label="Numero de documento"
             name="documentNumber"
             size="small"
             value={values.documentNumber}
             onChange={handleInputChange}
             error={errors.documentNumber}
-            sx={{
-              margin: 1,
-            }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
+            fullWidth
             label="telefono"
             name="telephone"
             size="small"
             value={values.telephone}
             onChange={handleInputChange}
             error={errors.telephone}
-            sx={{
-              margin: 1,
-            }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
+            fullWidth
             label="Correo"
             name="email"
             size="small"
             value={values.email}
             onChange={handleInputChange}
             error={errors.email}
-            sx={{
-              margin: 1,
-            }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
+            fullWidth
             label="plan-internet"
             name="plan"
             size="small"
             value={values.plan}
             onChange={handleInputChange}
             error={errors.plan}
-            sx={{
-              margin: 1,
-            }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Input
+            fullWidth
             label="observaciones"
             name="observations"
             size="small"
+            multiline
+            rows={4}
+            maxRows={4}
             value={values.observations}
             onChange={handleInputChange}
             error={errors.observations}
-            sx={{
-              margin: 1,
-            }}
           />
+        </Grid>
+        <Grid item xs={6}>
           <Controls.Checkbox
+            fullWidth
             label="Estado"
             name="state"
             size="small"
             value={values.state}
             onChange={handleInputChange}
             error={errors.state}
-            sx={{
-              margin: 1,
-            }}
           />
-          <div
+        </Grid>
+        <Grid
+          container
+          //justifyContent="center"
+          direction="row"
+          //alignItems="center"
+          //spacing={0}
+        >
+          <Grid
+            item
+            xs={4}
             style={{
-              margin: 1,
+              marginTop: 10,
+              marginLeft: 6,
+              //border: '1px solid blue',
             }}
           >
             <Controls.Button
-              style={{
-                margin: 3,
-              }}
               type="submit"
-              text="Submit"
+              text="Enviar"
               size="small"
+              onClick={handleSubmit}
               loading={
                 loading && (
                   <CircularProgress
@@ -267,18 +295,24 @@ export default function UserDialogForm(props) {
               }
               disabled={loading}
             />
+          </Grid>
+          <Grid
+            item
+            xs={4}
+            style={{
+              marginTop: 10,
+              //border: '1px solid blue',
+            }}
+          >
             <Controls.Button
-              style={{
-                margin: 3,
-              }}
               text="Reset"
               size="small"
               color="default"
               onClick={resetForm}
             />
-          </div>
+          </Grid>
         </Grid>
       </Grid>
-    </Form>
+    </Box>
   )
 }

@@ -3,7 +3,7 @@ import PlanesInternetTable from "./PlanesInternetTable";
 
 export default function Home() {
   return (
-    <div class="wrapper">
+    <div className="wrapper">
       <Sidebar/>
       <PlanesInternetTable/>
     </div>

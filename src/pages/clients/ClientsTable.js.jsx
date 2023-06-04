@@ -18,6 +18,12 @@ import InputAdornment from '@mui/material/InputAdornment'
 import { makeStyles } from '@mui/styles'
 import Paper from '@mui/material/Paper'
 import axios from 'axios'
+import { insert, update, remove } from './apis'
+import { getDate, dateFormat, getDateTime } from '../../services/service'
+import { Button, Grid } from '@mui/material'
+import { ButtonExport, ButtonImport } from '../../components/elements/Button'
+import { Typography } from '@mui/material'
+import * as XLSX from 'xlsx'
 
 const useStyles = makeStyles((theme) => ({
   roots: {
@@ -54,12 +60,12 @@ const headCells = [
   { id: 'clientType', label: 'Tipo cliente' },
   { id: 'address', label: 'Dirección' },
   { id: 'district', label: 'Distrito' },
-  { id: 'startDate', label: 'Fecha de inicio' },
+  { id: 'startDate', label: 'Fecha inicio' },
   { id: 'documentType', label: 'Tipo documento' },
   { id: 'documentNumber', label: 'Numero documento' },
   { id: 'telephone', label: 'Telefono' },
   { id: 'email', label: 'Correo' },
-  { id: 'voucherType', label: 'Tipo comprobante' },
+  // { id: 'voucherType', label: 'Tipo comprobante' },
   { id: 'Plan', label: 'Plan' },
   { id: 'observations', label: 'Observaciones' },
   { id: 'state', label: 'Estado' },
@@ -117,7 +123,7 @@ export default function UserTable() {
         },
       })
       .then((response) => {
-        console.log(response)
+        console.log(response.data)
         if (response.data) {
           setRecords(response.data)
         }
@@ -148,43 +154,16 @@ export default function UserTable() {
 
   async function addOrEdit(value, resetForm) {
     setLoading(true)
+    console.log(value)
     try {
       if (value.id == 0) {
-        var localhost = 'http://localhost:5001'
-        var token = localStorage.getItem('token')
-        const loggedInResponse = await fetch(
-          localhost + '/api/v1/clients',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(value),
-          }
-        )
-        const loggedIn = await loggedInResponse.json()
-        console.log(loggedIn)
+        value.startDate = getDate(value.startDate.$d)
+        var result = await insert(value)
+        if (result.error) throw new EvalError(result.error)
       } else {
-        console.log(value)
-        var localhost = 'http://localhost:5001'
-        var token = localStorage.getItem('token')
-        const loggedInResponse = await fetch(
-          localhost + '/clients',
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(value),
-          }
-        )
-        const loggedIn = await loggedInResponse.json()
-        console.log(loggedIn)
-        if (loggedIn.error) {
-          alert(loggedIn.error)
-        }
+        value.startDate = getDate(value.startDate.$d)
+        var result = await update(value)
+        if (result.error) throw new EvalError(result.error)
         resetForm()
         setRecordForEdit(null)
         setOpenPopup(false)
@@ -220,22 +199,8 @@ export default function UserTable() {
       isOpen: false,
     })
     try {
-      console.log(value)
-      var localhost = 'http://localhost:5001'
-      var token = localStorage.getItem('token')
-      const loggedInResponse = await fetch(
-        localhost + '/api/v1/planes-internet',
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(value),
-        }
-      )
-      const loggedIn = await loggedInResponse.json()
-      console.log(loggedIn)
+      var result = await remove(value)
+      if (result.error) throw new EvalError(result.error)
       getData()
     } catch (error) {
       console.log(error)
@@ -247,100 +212,103 @@ export default function UserTable() {
       type: 'success',
     })
   }
-  async function deleteData(url = '', data = {}) {
-    const response = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application.json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
+  const exportExcel = () => {
+    const clientesExport = recordsAfterPagingAndSorting().map((cliente) => {
+      return {
+        NOMBRE: cliente.fullName,
+        'TIPO CLIENTE': cliente.clientType,
+        address: cliente.address,
+        DISTRITO: cliente.district,
+        'FECHA INICIO': cliente.startDate,
+        'TIPO DOCUMENTO': cliente.documentNumber,
+        TELÉFONO: cliente.telephone,
+        CORREO: cliente.email,
+        'PLAN INTERNT': cliente.plan,
+        OBSERVACIONES: cliente.observations,
+        ESTADO: cliente.state,
+      }
     })
-    return response.json() // parses JSON response into native JavaScript objects
-  }
-
-  async function updateData(url = '', data = {}) {
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        Accept: 'application.json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-    })
-    return response.json() // parses JSON response into native JavaScript objects
-  }
-
-  async function postData(url = '', data = {}) {
-    const response = await fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      //mode: 'cors', // no-cors, *cors, same-origin
-      //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      //credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        Accept: 'application.json',
-        'Content-Type': 'application/json',
-      },
-      //redirect: 'follow', // manual, *follow, error
-      //referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-    })
-    return response.json() // parses JSON response into native JavaScript objects
+    console.log(clientesExport)
+    const fileName = `Clientes_${getDateTime()}`
+    const wb = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(clientesExport)
+    XLSX.utils.book_append_sheet(wb, ws, 'Clientes')
+    XLSX.writeFile(wb, `${fileName}.xlsx`)
   }
 
   return (
     <Box>
       <Box className={classes.root}>
-        <Toolbar
+        <Grid container>
+          <Grid item xs={12} sm={4}>
+            <Typography
+              variant="h1"
+              component="div"
+              sx={{ flexGrow: 1, fontWeight: 500, fontSize: '30px' }}
+            >
+              Clientes
+            </Typography>
+          </Grid>
+          <Grid container item xs={12} sm={8} justifyContent="end">
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                type="button"
+                onClick={() => {
+                  setOpenPopup(true)
+                  setRecordForEdit(null)
+                }}
+              >
+                Nuevo Cliente
+              </Button>
+              <ButtonImport to="/import" text="importar clientes" />
+              <ButtonExport text="Exportar clientes" onClick={exportExcel} />
+            </Box>
+          </Grid>
+        </Grid>
+        <Controls.Input
+          size="small"
+          variant="filled"
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            //border: "2px solid forestgreen",
+            //width: { xs: 400, sm: 280, md: 600, lg: 700 },
             width: '100%',
           }}
-        >
-          <Controls.Input
-            size="small"
-            label="buscar"
-            sx={{
-              //width: { xs: 400, sm: 280, md: 600, lg: 700 },
-              width: '50%',
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
-          <Controls.Button
-            variant="outlined"
-            sx={{
-              //width: { xs: 400, sm: 280, md: 600, lg: 700 },
-              margin: 1,
-              width: '7%',
-              paddingLeft: '29px',
-            }}
-            startIcon={<AddIcon />}
-            onClick={() => {
-              setOpenPopup(true)
-              setRecordForEdit(null)
-            }}
-          />
-        </Toolbar>
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          onChange={handleSearch}
+        />
         <TblContainer className={classes.table} size="small">
           <TblHead />
           <TableBody>
             {recordsAfterPagingAndSorting()?.map((item) => (
               <TableRow key={item._id}>
-                <TableCell>{item.documenttype}</TableCell>
-                <TableCell>{item.documentnumber}</TableCell>
-                <TableCell>{item.email}</TableCell>
                 <TableCell>{item.fullName}</TableCell>
-                <TableCell>{item.telefono}</TableCell>
+                <TableCell>{item.clientType}</TableCell>
+                <TableCell>{item.address}</TableCell>
+                <TableCell>{item.district}</TableCell>
+                <TableCell>{dateFormat(item.startDate)}</TableCell>
+                <TableCell>{item.documentType}</TableCell>
+                <TableCell>{item.documentNumber}</TableCell>
+                <TableCell>{item.telephone}</TableCell>
+                <TableCell>{item.email}</TableCell>
+                <TableCell>{item.plan}</TableCell>
+                <TableCell>{item.observations}</TableCell>
+                <TableCell>
+                  {item.state === true ? 'Activo' : 'Inactivo'}
+                </TableCell>
+
                 <TableCell
                   style={{
                     display: 'flex',
@@ -377,7 +345,7 @@ export default function UserTable() {
         <TblPagination />
       </Box>
       <Popup
-        title="Formulario de usuario"
+        title="Formulario de cliente"
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >

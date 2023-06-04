@@ -1,18 +1,18 @@
-import React, {useState, useEffect, useRef, useMemo} from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import dayjs from "dayjs";
-import Stack from "@mui/material/Stack";
-import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Button from "@mui/material/Button";
+import React, { useState, useEffect, useRef, useMemo } from 'react'
+import TextField from '@mui/material/TextField'
+import Autocomplete from '@mui/material/Autocomplete'
+import dayjs from 'dayjs'
+import Stack from '@mui/material/Stack'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import Button from '@mui/material/Button'
 // import ProductsTable from "./ProductsTable";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress'
 // import {
 // query,
 // collection,
@@ -24,40 +24,40 @@ import CircularProgress from '@mui/material/CircularProgress';
 // where,
 // } from "firebase/firestore";
 // import { db } from "../../firebase";
-import {v4 as uuidv4} from "uuid";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Box from "@mui/material/Box";
+import { v4 as uuidv4 } from 'uuid'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Box from '@mui/material/Box'
 // import { useAuth } from "../../contexts/AuthContext";
 // import * as service from "../../services/service";
 // import { NotificationManager } from "react-notifications";
 // import LookupDNIandRUC from "./LookupDNIandRUC";
 // import RetencionesRetracciones from "./RetencionesRetracciones";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 // import ReferenceDocument from "./ReferenceDocument";
-import Popper from "@mui/material/Popper";
+import Popper from '@mui/material/Popper'
 // import { useStock } from "../../hooks/stock/useStock";
 // import Documents from "./Documents";
 // import Serie from "./Serie";
 // import Others from "./Others";
 // import QRCodeBar from "./QRCodeBar";
-import TakeoutDiningIcon from "@mui/icons-material/TakeoutDining";
-import TakeoutDiningOutlinedIcon from "@mui/icons-material/TakeoutDiningOutlined";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+import TakeoutDiningIcon from '@mui/icons-material/TakeoutDining'
+import TakeoutDiningOutlinedIcon from '@mui/icons-material/TakeoutDiningOutlined'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 // import { useUnidadMedida } from "../../hooks/unidad-medida/useUnidadMedida";
 // import { useDocumentosVentas } from "../../hooks/documentos/useDocumentosVentas";
 // import { useDocumentos } from "../../hooks/documentos/useDocumentos";
-import {Avatar, Tooltip} from "@mui/material";
+import { Avatar, Tooltip } from '@mui/material'
 // import { ModalStockAlmacenes } from "./ModalStockAlmacenes";
 // import { useProductos } from "../../hooks/productos/useProductos";
 // import { useAlmacenes } from "../../hooks/almacenes/useAlmacenes";
-import {makeStyles} from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   wrapSaleInformation: {
-    display: "flex",
-    border: "1px solid rgb(102, 97, 97)",
+    display: 'flex',
+    border: '1px solid rgb(102, 97, 97)',
 
     // [theme.breakpoints.down("sm")]: {
     // flexDirection: "column",
@@ -71,89 +71,98 @@ const useStyles = makeStyles((theme) => ({
     // [theme.breakpoints.up("lg")]: {
     // flexDirection: "row",
     // },
-    gap: "20px",
-    flexWrap: "wrap"
+    gap: '20px',
+    flexWrap: 'wrap',
   },
   wrapClient: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
 
-    gap: "10px"
+    gap: '10px',
   },
   datesandCurrency: {
-    border: "1px solid rgb(102, 97, 97)",
-    display: "flex",
-    gap: "10px"
+    border: '1px solid rgb(102, 97, 97)',
+    display: 'flex',
+    gap: '10px',
+  },
+}))
 
-  }
-}));
+const NewSale = () => {
+  // const { actualizarStock } = useStock();
+  const classes = useStyles()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [loadingPreview, setLoadingPreview] = useState(false)
+  const [currentProduct, setCurrentProduct] = useState('')
+  const [indexDivisa, setIndexDivisa] = useState(0)
 
-const NewSale = () => { // const { actualizarStock } = useStock();
-  const classes = useStyles();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [loadingPreview, setLoadingPreview] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState("");
-  const [indexDivisa, setIndexDivisa] = useState(0);
+  const [incIgv, setIncIgv] = useState(true)
+  const [searchByPackage, setSearchByPackage] = useState(false)
 
-  const [incIgv, setIncIgv] = useState(true);
-  const [searchByPackage, setSearchByPackage] = useState(false);
+  const [openC, setOpenC] = useState(false)
+  const [optionsC, setOptionsC] = useState([
+    {
+      name: 'ed',
+    },
+  ])
+  const loadingC = openC && optionsC.length === 0
 
-  const [openC, setOpenC] = useState(false);
-  const [optionsC, setOptionsC] = useState([{
-      name: "ed"
-    }]);
-  const loadingC = openC && optionsC.length === 0;
+  const [openP, setOpenP] = useState(false)
+  const [optionsP, setOptionsP] = useState([])
+  const [productPackages, setProductPackages] = useState([])
 
-  const [openP, setOpenP] = useState(false);
-  const [optionsP, setOptionsP] = useState([]);
-  const [productPackages, setProductPackages] = useState([]);
-
-  const loadingP = openP && optionsP.length === 0;
-  const [total, setTotal] = useState(0);
+  const loadingP = openP && optionsP.length === 0
+  const [total, setTotal] = useState(0)
   // const { companies, currentUser, _divisa } = useAuth();
-  const [warehouses, setWarehouses] = useState([]);
-  const [warehouseId, setWarehouseId] = useState("all");
-  const [documents, setDocuments] = useState([]);
-  const [paymentConditions, setPaymentConditions] = useState({credito: [], contado: []});
+  const [warehouses, setWarehouses] = useState([])
+  const [warehouseId, setWarehouseId] = useState('all')
+  const [documents, setDocuments] = useState([])
+  const [paymentConditions, setPaymentConditions] = useState({
+    credito: [],
+    contado: [],
+  })
   const [divisa, setDivisa] = useState([
     {
-      code: "PEN",
-      name: "SOLES",
-      flag: "S/"
-    }, {
-      code: "USD",
-      name: "DOLARES AMERICANOS",
-      flag: "$"
+      code: 'PEN',
+      name: 'SOLES',
+      flag: 'S/',
+    },
+    {
+      code: 'USD',
+      name: 'DOLARES AMERICANOS',
+      flag: '$',
     },
     // { code: 'EUR', name: 'EUROS', flag: '€' },
-  ]);
-  const [productPrice, setProductPrice] = useState("precio1");
+  ])
+  const [productPrice, setProductPrice] = useState('precio1')
   const productPrices = [
-    "precio1",
-    "precio2",
-    "precio3",
-    "precio4",
-    "precio5",
-    "precio6",
-  ];
+    'precio1',
+    'precio2',
+    'precio3',
+    'precio4',
+    'precio5',
+    'precio6',
+  ]
   const productoDivisa = {
-    PEN: "preciosSoles",
-    USD: "preciosDolares",
-    EUR: "preciosEuros"
-  };
-  const [series, setSeries] = useState([]);
-  const [serieObj, setSerieObj] = useState({serie: "", sellerDocumentSerie: ""});
-  const [anchorEl, setAnchorEl] = useState(null);
+    PEN: 'preciosSoles',
+    USD: 'preciosDolares',
+    EUR: 'preciosEuros',
+  }
+  const [series, setSeries] = useState([])
+  const [serieObj, setSerieObj] = useState({
+    serie: '',
+    sellerDocumentSerie: '',
+  })
+  const [anchorEl, setAnchorEl] = useState(null)
   // const { unidades } = useUnidadMedida();
   // const { documentosVenta } = useDocumentosVentas();
   // const { documentosVentas } = useDocumentos();
-  const bolsa = 0.5;
+  const bolsa = 0.5
 
   var value = {
-    serie: "",
+    serie: '',
     bag: false,
-    costbag: "0.00",
+    costbag: '0.00',
     // branchId: service.getBranchId(companies),
     // CompanyId: service.getCompanyID(companies),
     timeStamp: new Date().getTime(),
@@ -177,77 +186,79 @@ const NewSale = () => { // const { actualizarStock } = useStock();
       // password: service.getCompanyDetail(companies).password,
     },
     client: {
-      clientId: "",
-      documentNumber: "",
-      customerName: "",
-      unknownUser: "",
-      typeDocument: "",
-      mail: ""
+      clientId: '',
+      documentNumber: '',
+      customerName: '',
+      unknownUser: '',
+      typeDocument: '',
+      mail: '',
     },
     voucherIdentificationData: {
-      objSerieIndex: "",
+      objSerieIndex: '',
       series: [],
       objSerie: {},
-      igv: "",
+      igv: '',
       document: {},
       cuotas: [],
-      n_cuotas: "0",
-      payment_condition: "CONTADO",
+      n_cuotas: '0',
+      payment_condition: 'CONTADO',
       divisa: {
-        code: "PEN",
-        name: "SOLES",
-        flag: "S/",
-        exchangeRate: {}
+        code: 'PEN',
+        name: 'SOLES',
+        flag: 'S/',
+        exchangeRate: {},
       },
-      UBLVersionID: "2.1",
-      customizationID: "2.0",
-      serie: "",
-      number: "",
+      UBLVersionID: '2.1',
+      customizationID: '2.0',
+      serie: '',
+      number: '',
       date_issue: Date.now(),
-      issuance_time: "15:02:21",
+      issuance_time: '15:02:21',
       expiration_date: Date.now(),
-      type_operation: "0101",
-      document_code: "",
-      document_currency_code: "PEN",
-      voucher_type: "",
-      series_number_attached_voucher: "",
-      nc_code: "",
-      reason: "",
-      payment_method: "",
-      referralGuide: "",
-      oc_os: "",
-      observation3: "",
-      observation4: "",
-      observation5: "",
+      type_operation: '0101',
+      document_code: '',
+      document_currency_code: 'PEN',
+      voucher_type: '',
+      series_number_attached_voucher: '',
+      nc_code: '',
+      reason: '',
+      payment_method: '',
+      referralGuide: '',
+      oc_os: '',
+      observation3: '',
+      observation4: '',
+      observation5: '',
 
       withholdings: {
-        withholdingRegime: "NO AFECTO",
-        ChargeIndicator: "false",
-        AllowanceChargeReasonCode: "62",
-        MultiplierFactorNumeric: "0.00",
-        Amount: "0.00",
-        BaseAmount: "0.00"
+        withholdingRegime: 'NO AFECTO',
+        ChargeIndicator: 'false',
+        AllowanceChargeReasonCode: '62',
+        MultiplierFactorNumeric: '0.00',
+        Amount: '0.00',
+        BaseAmount: '0.00',
       },
       detraction: {
-        serviceCode: "NO AFECTO",
+        serviceCode: 'NO AFECTO',
         PaymentMeans: {
-          ID: "Detraccion",
-          PaymentMeansCode: "",
-          PayeeFinancialAccountID: ""
+          ID: 'Detraccion',
+          PaymentMeansCode: '',
+          PayeeFinancialAccountID: '',
         },
         PaymentTerms: {
-          ID: "",
-          PaymentMeansID: "",
-          PaymentPercent: "",
-          Amount: ""
-        }
-      }
+          ID: '',
+          PaymentMeansID: '',
+          PaymentPercent: '',
+          Amount: '',
+        },
+      },
     },
     total_voucher_data: {
-      fullDiscount: "0.00"
-    }
-  };
-  const [inputs, setInputs] = useState(JSON.parse(localStorage.getItem("salesCopy")) || value);
+      fullDiscount: '0.00',
+    },
+  }
+  const [inputs, setInputs] = useState(
+    JSON.parse(localStorage.getItem('salesCopy')) || value
+  )
 
   // useEffect(() => {
   // if (inputs.voucher_identification_data.document) {
@@ -293,7 +304,6 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // const querySnapshot = await getDocs(collection(db, "conditions"));
     // var cashConditions = [];
     // var creditConditions = [];
-
     // querySnapshot.forEach((doc) => {
     // if (doc.data().condition_type === "CONTADO") {
     // inputs?.voucher_identification_data?.document?.condiciones?.map(
@@ -322,53 +332,55 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // );
     // }
     // });
-
     // paymentConditions.contado = cashConditions;
     // paymentConditions.credito = creditConditions;
     // setPaymentConditions(paymentConditions);
-  };
+  }
 
   async function totalBag() {
-    var quantity = 0;
+    var quantity = 0
     inputs.products.map((item) => {
       if (item.bag === true) {
-        quantity = quantity + item.quantity;
+        quantity = quantity + item.quantity
       }
-    });
-    inputs.costbag = (quantity * bolsa).toFixed(2);
+    })
+    inputs.costbag = (quantity * bolsa).toFixed(2)
   }
 
   async function onChangeInput() {
-    var total = 0;
-    inputs.total_voucher_data.fullDiscount = 0;
+    var total = 0
+    inputs.total_voucher_data.fullDiscount = 0
     inputs.products.map((item) => {
-      item.total = parseFloat(item.quantity) * parseFloat(item.price);
-      item.fullDiscount = (item.total / 100) * (item.discount < 0 ? (item.discount = 0) : item.discount);
-      item.total = item.total - item.fullDiscount;
-      item.total = item.total.toFixed(2);
-      total = total + parseFloat(item.total);
-      inputs.total_voucher_data.fullDiscount += parseFloat(item.fullDiscount);
-    });
-    inputs.total_voucher_data.fullDiscount = inputs.total_voucher_data ?. fullDiscount ?. toFixed(2);
+      item.total = parseFloat(item.quantity) * parseFloat(item.price)
+      item.fullDiscount =
+        (item.total / 100) *
+        (item.discount < 0 ? (item.discount = 0) : item.discount)
+      item.total = item.total - item.fullDiscount
+      item.total = item.total.toFixed(2)
+      total = total + parseFloat(item.total)
+      inputs.total_voucher_data.fullDiscount += parseFloat(item.fullDiscount)
+    })
+    inputs.total_voucher_data.fullDiscount =
+      inputs.total_voucher_data?.fullDiscount?.toFixed(2)
 
-    await totalBag();
-    total = total.toFixed(2);
-    setTotal(total);
+    await totalBag()
+    total = total.toFixed(2)
+    setTotal(total)
     setInputs((prevState) => ({
-      ...prevState
-    }));
+      ...prevState,
+    }))
   }
 
   async function handleCheckControl(e, value) {
     inputs.products.map((item) => {
       if (item.uuidv4 == value.uuidv4) {
-        item.bag = e;
+        item.bag = e
       }
-    });
-    await totalBag();
+    })
+    await totalBag()
     setInputs((prevState) => ({
-      ...prevState
-    }));
+      ...prevState,
+    }))
   }
 
   async function handleIncIgv(e) {
@@ -389,23 +401,23 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // await totalBag();
 
     setInputs((prevState) => ({
-      ...prevState
-    }));
+      ...prevState,
+    }))
   }
 
   const handleChangeRemoveProduct = async (e, uuidv4) => {
-    e.preventDefault();
-    inputs.products = inputs.products.filter((data) => data.uuidv4 != uuidv4);
-    var total = 0;
+    e.preventDefault()
+    inputs.products = inputs.products.filter((data) => data.uuidv4 != uuidv4)
+    var total = 0
     inputs.products.map((item) => {
-      total = total + parseFloat(item.total);
-    });
-    setTotal(total);
-    await totalBag();
+      total = total + parseFloat(item.total)
+    })
+    setTotal(total)
+    await totalBag()
     setInputs((prevState) => ({
-      ...prevState
-    }));
-  };
+      ...prevState,
+    }))
+  }
 
   const onChangeHandleClient = async (value) => {
     // const ref = collection(db, "clientes");
@@ -426,7 +438,7 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // }
     // });
     // setOptionsC(data);
-  };
+  }
 
   const loadProductPackages = async (value) => {
     // const ref = collection(db, "paquetes-productos");
@@ -438,13 +450,13 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // }
     // });
     // setProductPackages(packages);
-  };
+  }
 
   useEffect(() => {
     if (!openC) {
-      setOptionsC([]);
+      setOptionsC([])
     }
-  }, [openC]);
+  }, [openC])
 
   // useEffect(() => {
   // let documents = [];
@@ -495,7 +507,7 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // return () => {
     // unsubWarehouses();
     // };
-  }, []);
+  }, [])
 
   // useEffect(() => {
   // loadProductPackages();
@@ -738,8 +750,8 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // };
 
     setInputs((prevState) => ({
-      ...prevState
-    }));
+      ...prevState,
+    }))
   }
 
   async function getLastInsertedDocument() {
@@ -769,7 +781,7 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // }
 
     function between(x, min, max) {
-      return x >= min && x <= max;
+      return x >= min && x <= max
     }
 
     // if (serieObj.serie !== serieObj.letraSerie && serieObj.desde) {
@@ -848,7 +860,6 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 
   async function executeTransaction(kardexProducts) {
     // const copyInputs = service.previewVoucher(inputs, companies);
-
     // var document = service.getDocumentInRealTime(copyInputs, documents);
     // var permitirMovimientoStock = service.checkDocumentPermissions(
     // document,
@@ -858,20 +869,17 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // document,
     // "permitirMovimientoStockFlag"
     // );
-
     // var NoPermitirSalidaStockDocumentosReferenciados =
     // service.checkDocumentPermissions(
     // document,
     // "NoPermitirSalidaStockDocumentosReferenciados"
     // );
-
     // // console.log(copyInputs);
     // await service.update(
     // "sales_history",
     // copyInputs.timeStamp.toString(),
     // copyInputs
     // );
-
     // copyInputs.products?.map((value, index) => {
     // if (!value.kardex) {
     // delete copyInputs.products[index];
@@ -906,7 +914,6 @@ const NewSale = () => { // const { actualizarStock } = useStock();
     // });
     // });
     // }
-
     // if (
     // permitirMovimientoStock &&
     // permitirMovimientoStockFlag === "ingreso"
@@ -939,8 +946,8 @@ const NewSale = () => { // const { actualizarStock } = useStock();
   }
 
   function getPermisionProductPrice() {
-    var module = "Ventas";
-    var permission = "Permitir elegir el precio de la lista desplegable";
+    var module = 'Ventas'
+    var permission = 'Permitir elegir el precio de la lista desplegable'
     // return service.checkPermision(
     // currentUser.permissions,
     // module,
@@ -949,149 +956,169 @@ const NewSale = () => { // const { actualizarStock } = useStock();
   }
   const filteredProducts = useMemo(() => {
     if (searchByPackage) {
-      return productPackages.filter((user) => { // console.log("productPackages filtering...");
-        if (warehouseId != "all") {
-          return(user.warehouse_id === warehouseId && user.nombre.includes(currentProduct ?. toUpperCase()));
+      return productPackages.filter((user) => {
+        // console.log("productPackages filtering...");
+        if (warehouseId != 'all') {
+          return (
+            user.warehouse_id === warehouseId &&
+            user.nombre.includes(currentProduct?.toUpperCase())
+          )
         }
         if (!isNaN(currentProduct)) {
-          return user.serialCodes ?. includes(currentProduct);
+          return user.serialCodes?.includes(currentProduct)
         } else {
-          return user.nombre.includes(currentProduct ?. toUpperCase());
+          return user.nombre.includes(currentProduct?.toUpperCase())
         }
-      });
+      })
     } else {
-      return optionsP.filter((user) => { // console.log("optionsP filtering...");
-        if (warehouseId != "all") {
-          return(user.warehouse_id === warehouseId && user.nombre.includes(currentProduct ?. toUpperCase()));
+      return optionsP.filter((user) => {
+        // console.log("optionsP filtering...");
+        if (warehouseId != 'all') {
+          return (
+            user.warehouse_id === warehouseId &&
+            user.nombre.includes(currentProduct?.toUpperCase())
+          )
         }
 
         if (!isNaN(currentProduct)) {
-          return user.serialCodes ?. includes(currentProduct);
+          return user.serialCodes?.includes(currentProduct)
         } else {
-          return user.nombre.includes(currentProduct ?. toUpperCase());
+          return user.nombre.includes(currentProduct?.toUpperCase())
         }
-      });
+      })
     }
-  }, [currentProduct, warehouseId, searchByPackage]);
+  }, [currentProduct, warehouseId, searchByPackage])
 
   // const voucher_type = {"BOLETA DE VENTA ELECTRÓNICA":"03","FACTURA ELECTRÓNICA":"01","NOTA DE CREDITO":"07","NOTA DE DEBITO":"08","PROFORMA":"10"}
 
   // ModalStocks
-  const [optionTemp, setOptionTemp] = useState({});
-  const [openModalStock, setOpenModalStock] = useState(false);
+  const [optionTemp, setOptionTemp] = useState({})
+  const [openModalStock, setOpenModalStock] = useState(false)
 
   const handleOpen = (e) => {
-    setOpenModalStock(true);
-    setOptionTemp(e);
-  };
+    setOpenModalStock(true)
+    setOptionTemp(e)
+  }
 
   const handleClose = () => {
-    setOptionTemp({});
-    setOpenModalStock(false);
-  };
+    setOptionTemp({})
+    setOpenModalStock(false)
+  }
 
   return (
-    <Grid container
-      spacing={2}>
-      <Grid item
-        xs={6}
-        md={9}
-        lg={3}
-        style={
-          {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={2}>
+        <Grid
+          item
+          xs={6}
+          md={9}
+          lg={3}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             gap: 10,
-            border: "1px solid rgb(102, 97, 97)"
-
-          }
-      }>
-        <Autocomplete disableClearable size="small" fullWidth
-          open={openC}
-          onOpen={
-            () => {
-              setOpenC(true);
-            }
-          }
-          inputValue={
-            inputs.client.unknown_user
-          }
-          onChange={
-            (event, newValue) => {
-              if (inputs.voucher_identification_data.document_code === "01" && newValue.tipoDocumento === "DNI") {
-                inputs.client.unknown_user = "";
+            border: '1px solid rgb(102, 97, 97)',
+          }}
+        >
+          <Autocomplete
+            disableClearable
+            size="small"
+            fullWidth
+            open={openC}
+            onOpen={() => {
+              setOpenC(true)
+            }}
+            inputValue={inputs.client.unknown_user}
+            onChange={(event, newValue) => {
+              if (
+                inputs.voucher_identification_data.document_code === '01' &&
+                newValue.tipoDocumento === 'DNI'
+              ) {
+                inputs.client.unknown_user = ''
                 // NotificationManager.info(
                 // "Para Factura se debe seleccionar un cliente con RUC",
                 // "Info!",
                 // 3000
                 // );
-                return false;
+                return false
               }
 
-              inputs.client.customer_name = newValue.nombre;
-              inputs.client.sales_customer_address = newValue.direcciones ?. length ? newValue.direcciones[0] ?. direccion : "";
-              inputs.client.phone = newValue.telefonos ?. length ? newValue.telefonos[0] ?. numero : "";
-              inputs.client.document_number = newValue.numeroDocumento;
-              inputs.client.type_document = newValue.tipoDocumento;
-              inputs.voucher_identification_data.serie = "";
-              inputs.client.mail = newValue.correo;
-              inputs.client.unknown_user = newValue.nombre + " - " + newValue.tipoDocumento + ": " + newValue.numeroDocumento;
+              inputs.client.customer_name = newValue.nombre
+              inputs.client.sales_customer_address = newValue.direcciones
+                ?.length
+                ? newValue.direcciones[0]?.direccion
+                : ''
+              inputs.client.phone = newValue.telefonos?.length
+                ? newValue.telefonos[0]?.numero
+                : ''
+              inputs.client.document_number = newValue.numeroDocumento
+              inputs.client.type_document = newValue.tipoDocumento
+              inputs.voucher_identification_data.serie = ''
+              inputs.client.mail = newValue.correo
+              inputs.client.unknown_user =
+                newValue.nombre +
+                ' - ' +
+                newValue.tipoDocumento +
+                ': ' +
+                newValue.numeroDocumento
               setInputs((prevState) => ({
-                ...prevState
-              }));
+                ...prevState,
+              }))
+            }}
+            onClose={() => {
+              setOpenC(false)
+            }}
+            getOptionLabel={(option) =>
+              option.nombre +
+              ' - ' +
+              option.tipoDocumento +
+              ': ' +
+              option.numeroDocumento
             }
-          }
-          onClose={
-            () => {
-              setOpenC(false);
-            }
-          }
-          getOptionLabel={
-            (option) => option.nombre + " - " + option.tipoDocumento + ": " + option.numeroDocumento
-          }
-          options={optionsC}
-          loading={loadingC}
-          renderInput={
-            (params) => (
-              <TextField {...params} label="Cliente" variant="outlined"
-                onChange={
-                  (ev) => {
-          
-										if (ev.target.value !== "" || ev.target.value !== null) {
-                      inputs.client.unknown_user = ev.target.value;
-                      onChangeHandleClient(ev.target.value);
-                      setInputs((prevState) => ({
-                        ...prevState
-                      }));
-                    }
+            options={optionsC}
+            loading={loadingC}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Cliente"
+                variant="outlined"
+                onChange={(ev) => {
+                  if (ev.target.value !== '' || ev.target.value !== null) {
+                    inputs.client.unknown_user = ev.target.value
+                    onChangeHandleClient(ev.target.value)
+                    setInputs((prevState) => ({
+                      ...prevState,
+                    }))
                   }
-                }/>
-            )
-          }/> {/* <LookupDNIandRUC
+                }}
+              />
+            )}
+          />{' '}
+          {/* <LookupDNIandRUC
 							inputs={inputs}
 							setInputs={setInputs}
-						/> */} </Grid>
-      <Grid item
-        xs={12}
-        md={3}
-        lg={3}
-        style={
-          {border: "1px solid rgb(102, 97, 97)"}
-
-      }>
-        <LocalizationProvider dateAdapter={AdapterDayjs}
-          size="small">
-          <DesktopDatePicker size="small" label="Fecha de emisión"
-            // value={
-            // 	inputs.voucher_identification_data
-            // 		.date_issue
-            // }
-            inputFormat="DD/MM/YYYY"
-            onChange={
-              (e) => {
-                var module = "Ventas";
-                var permission = "Permitir Cambiar F.Emision";
+						/> */}{' '}
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          md={3}
+          lg={3}
+          style={{ border: '1px solid rgb(102, 97, 97)' }}
+        >
+          <LocalizationProvider dateAdapter={AdapterDayjs} size="small">
+            <DesktopDatePicker
+              size="small"
+              label="Fecha de emisión"
+              // value={
+              // 	inputs.voucher_identification_data
+              // 		.date_issue
+              // }
+              inputFormat="DD/MM/YYYY"
+              onChange={(e) => {
+                var module = 'Ventas'
+                var permission = 'Permitir Cambiar F.Emision'
 
                 // if (
                 // service.checkPermision(
@@ -1106,91 +1133,82 @@ const NewSale = () => { // const { actualizarStock } = useStock();
                 // alert("permiso insuficiente");
                 // }
                 setInputs((prevState) => ({
-                  ...prevState
-                }));
-              }
-            }
-            renderInput={
-              (params) => (
-                <TextField fullWidth size="small"
+                  ...prevState,
+                }))
+              }}
+              renderInput={(params) => (
+                <TextField
+                  fullWidth
+                  size="small"
+                  onChange={(e) => {
+                    var module = 'Ventas'
+                    var permission = 'Permitir Cambiar F.Emision'
 
-                  onChange={
-                    (e) => {
-                      var module = "Ventas";
-                      var permission = "Permitir Cambiar F.Emision";
+                    // if (
+                    // !service.checkPermision(
+                    // currentUser.permissions,
+                    // module,
+                    // permission
+                    // )
+                    // ) {
+                    // inputs.voucher_identification_data.date_issue =
+                    // Date.now();
+                    // setInputs(
+                    // (prevState) => ({
+                    // ...prevState,
+                    // })
+                    // );
+                    // }
+                  }}
+                  {...params}
+                />
+              )}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} md={4} lg={2}>
+          <FormControl size="small" fullWidth>
+            <InputLabel id="label-currency">Moneda</InputLabel>
+            <Select
+              size="small"
+              labelId="label-currency"
+              name="currency"
+              value={indexDivisa}
+              label="Moneda"
+              onChange={(e) => {
+                var module = 'Ventas'
+                var permission = 'Permitir cambiar de Moneda'
 
-                      // if (
-                      // !service.checkPermision(
-                      // currentUser.permissions,
-                      // module,
-                      // permission
-                      // )
-                      // ) {
-                      // inputs.voucher_identification_data.date_issue =
-                      // Date.now();
-                      // setInputs(
-                      // (prevState) => ({
-                      // ...prevState,
-                      // })
-                      // );
-                      // }
-                    }
-                  }
-                  {...params}/>
-              )
-            }/>
-        </LocalizationProvider>
-  </Grid>
-  <Grid item
-    xs={12}
-    md={4}
-    lg={2}>
-    <FormControl size="small" fullWidth>
-      <InputLabel id="label-currency">Moneda</InputLabel>
-      <Select size="small" labelId="label-currency" name="currency"
-        value={indexDivisa}
-        label="Moneda"
-        onChange={
-          (e) => {
-            var module = "Ventas";
-            var permission = "Permitir cambiar de Moneda";
-
-            // if (
-            // service.checkPermision(
-            // currentUser.permissions,
-            // module,
-            // permission
-            // )
-            // ) {
-            // inputs.voucher_identification_data.divisa =
-            // divisa[e.target.value];
-            // // console.log(divisa[e.target.value]);
-            // setIndexDivisa(e.target.value);
-            // // inputs.voucher_identification_data.divisa = e.target.value;
-            // } else {
-            // alert("permiso insuficiente");
-            // }
-            setInputs((prevState) => ({
-              ...prevState
-            }));
-          }
-      }>
-        {
-        divisa.map((element, index) => (
-          <MenuItem key={index}
-            value={index}>
-            {
-            element.name
-          } </MenuItem>
-        ))
-      } </Select>
-    </FormControl>
-  </Grid>
-  <Grid item
-    xs={12}
-    md={8}
-    lg={8}>
-    {/* <Documents
+                // if (
+                // service.checkPermision(
+                // currentUser.permissions,
+                // module,
+                // permission
+                // )
+                // ) {
+                // inputs.voucher_identification_data.divisa =
+                // divisa[e.target.value];
+                // // console.log(divisa[e.target.value]);
+                // setIndexDivisa(e.target.value);
+                // // inputs.voucher_identification_data.divisa = e.target.value;
+                // } else {
+                // alert("permiso insuficiente");
+                // }
+                setInputs((prevState) => ({
+                  ...prevState,
+                }))
+              }}
+            >
+              {divisa.map((element, index) => (
+                <MenuItem key={index} value={index}>
+                  {element.name}{' '}
+                </MenuItem>
+              ))}{' '}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={8} lg={8}>
+          {/* <Documents
 							inputs={inputs}
 							value={inputs}
 							setInputs={setInputs}
@@ -1198,20 +1216,19 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 							setSerieObj={setSerieObj}
 							series={series}
 							setSeries={setSeries}
-						/> */} </Grid>
-  <Grid item
-    xs={12}
-    md={4}
-    lg={4}>
-    {/* <Serie
+						/> */}{' '}
+        </Grid>
+        <Grid item xs={12} md={4} lg={4}>
+          {/* <Serie
 							inputs={inputs}
 							documents={documents}
 							serieObj={serieObj}
 							setSerieObj={setSerieObj}
 							series={series}
 							setSeries={setSeries}
-						/> */} </Grid>
-  {/* {!serieObj.desde && !serieObj.hasta && series.length > 0 && (
+						/> */}{' '}
+        </Grid>
+        {/* {!serieObj.desde && !serieObj.hasta && series.length > 0 && (
           <TextField
             size="small"
             sx={{ m: 0, width: 100 }}
@@ -1224,9 +1241,7 @@ const NewSale = () => { // const { actualizarStock } = useStock();
             }}
           />
         )} */}
-
-
-  {/* {inputs.voucher_identification_data.document_code ===
+        {/* {inputs.voucher_identification_data.document_code ===
 						"08" && (
 						<FormControl sx={{ width: 150 }} size="small">
 							<InputLabel id="label-serie">
@@ -1267,8 +1282,7 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 							</Select>
 						</FormControl>
 					)} */}
-
-  {/* {inputs.voucher_identification_data.document_code ===
+        {/* {inputs.voucher_identification_data.document_code ===
 						"07" && (
 						<FormControl sx={{ width: 150 }} size="small">
 							<InputLabel id="label-serie">
@@ -1324,187 +1338,174 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 							</Select>
 						</FormControl>
 					)} */}
+        <Grid item xs={12}>
+          <Grid
+            container
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid item xs>
+              <Autocomplete
+                disableClearable
+                size="small"
+                fullWidth
+                open={openP}
+                onOpen={() => {
+                  setOpenP(true)
+                }}
+                value={{ nombre: currentProduct }}
+                onInputChange={(event, value, reason) => {
+                  setCurrentProduct(value)
+                }}
+                onChange={async (event, newValue) => {
+                  // if (newValue && !searchByPackage) {
+                  // var document =
+                  // service.getDocumentInRealTime(
+                  // inputs,
+                  // documents
+                  // );
+                  // if (
+                  // service.checkDocumentPermissions(
+                  // document,
+                  // "noPermitirVentaSinStock"
+                  // ) &&
+                  // !(
+                  // newValue.warehouses[0]
+                  // .stock > 0
+                  // )
+                  // ) {
+                  // alert(
+                  // "Según el documento seleccionado no se admiten productos sin stock"
+                  // );
+                  // return false;
+                  // }
+                  // // console.log(newValue);
+                  // if (
+                  // newValue.serialCodes.includes(
+                  // currentProduct
+                  // )
+                  // ) {
+                  // newValue.serialCodesSelected = [
+                  // currentProduct,
+                  // ];
+                  // }
+                  // inputs.products.push({
+                  // ...newValue,
+                  // uuidv4: uuidv4(),
+                  // });
+                  // var result = (
+                  // parseFloat(total) +
+                  // parseFloat(newValue.price)
+                  // ).toFixed(2);
+                  // setTotal(result);
+                  // setInputs((prevState) => ({
+                  // ...prevState,
+                  // }));
+                  // setCurrentProduct("");
+                  // }
+                  // if (newValue && searchByPackage) {
+                  // await service.getProductsFromPackage(
+                  // newValue,
+                  // warehouses,
+                  // productoDivisa,
+                  // inputs,
+                  // productPrice,
+                  // unidades
+                  // );
+                  // onChangeInput();
+                  // setInputs((prevState) => ({
+                  // ...prevState,
+                  // }));
+                  // }
+                }}
+                onClose={() => {
+                  setOpenP(false)
+                }}
+                getOptionLabel={(option) =>
+                  typeof option === 'string' ? option : option.nombre
+                }
+                filterOptions={(options, state) => {
+                  return filteredProducts
+                }}
+                options={optionsP}
+                loading={loadingP}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Productos"
+                    variant="outlined"
+                  />
+                )}
+                renderOption={(props, option) => {
+                  return (
+                    <Box component="li" {...props} key={option.uuidv4}>
+                      <Grid container alignItems="center" spacing={2}>
+                        <Grid item xs="auto">
+                          <Avatar
+                            alt={option?.nombre}
+                            src={option?.imagen}
+                            sx={{
+                              width: 50,
+                              height: 50,
+                            }}
+                            variant="rounded"
+                          />
+                        </Grid>
 
-
-  <Grid item
-    xs={12}>
-    <Grid container
-      spacing={2}
-      justifyContent="center"
-      alignItems="center">
-      <Grid item xs>
-        <Autocomplete disableClearable size="small" fullWidth
-          open={openP}
-          onOpen={
-            () => {
-              setOpenP(true);
-            }
-          }
-          value={
-            {nombre: currentProduct}
-          }
-          onInputChange={
-            (event, value, reason) => {
-              setCurrentProduct(value);
-            }
-          }
-          onChange={
-            async (event, newValue) => {
-              // if (newValue && !searchByPackage) {
-              // var document =
-              // service.getDocumentInRealTime(
-              // inputs,
-              // documents
-              // );
-              // if (
-              // service.checkDocumentPermissions(
-              // document,
-              // "noPermitirVentaSinStock"
-              // ) &&
-              // !(
-              // newValue.warehouses[0]
-              // .stock > 0
-              // )
-              // ) {
-              // alert(
-              // "Según el documento seleccionado no se admiten productos sin stock"
-              // );
-              // return false;
-              // }
-              // // console.log(newValue);
-
-              // if (
-              // newValue.serialCodes.includes(
-              // currentProduct
-              // )
-              // ) {
-              // newValue.serialCodesSelected = [
-              // currentProduct,
-              // ];
-              // }
-              // inputs.products.push({
-              // ...newValue,
-              // uuidv4: uuidv4(),
-              // });
-              // var result = (
-              // parseFloat(total) +
-              // parseFloat(newValue.price)
-              // ).toFixed(2);
-              // setTotal(result);
-              // setInputs((prevState) => ({
-              // ...prevState,
-              // }));
-              // setCurrentProduct("");
-              // }
-              // if (newValue && searchByPackage) {
-              // await service.getProductsFromPackage(
-              // newValue,
-              // warehouses,
-              // productoDivisa,
-              // inputs,
-              // productPrice,
-              // unidades
-              // );
-              // onChangeInput();
-              // setInputs((prevState) => ({
-              // ...prevState,
-              // }));
-              // }
-            }
-          }
-          onClose={
-            () => {
-              setOpenP(false);
-            }
-          }
-          getOptionLabel={
-            (option) => typeof option === "string" ? option : option.nombre
-          }
-
-
-          filterOptions={
-            (options, state) => {
-              return filteredProducts;
-            }
-          }
-          options={optionsP}
-          loading={loadingP}
-          renderInput={
-            (params) => (
-              <TextField {...params} fullWidth label="Productos" variant="outlined"/>
-            )
-          }
-          renderOption={
-            (props, option) => {
-              return (
-                <Box component="li" {...props}
-                  key={
-                    option.uuidv4
-                }>
-                  <Grid container alignItems="center"
-                    spacing={2}>
-                    <Grid item xs="auto">
-                      <Avatar alt={
-                          option ?. nombre
-                        }
-                        src={
-                          option ?. imagen
-                        }
-                        sx={
-                          {
-                            width: 50,
-                            height: 50
-                          }
-                        }
-                        variant="rounded"/>
-                    </Grid>
-
-                    <Grid item xs
-                      sx={
-                        {
-                          width: "calc(100% - 44px)",
-                          wordWrap: "break-word"
-                        }
-                    }>
-                      <Box component="span"
-                        sx={
-                          {fontWeight: "regular"}
-                      }>
-                        {
-                        option.nombre + " - CA: " + option.codigoAnexo + (option.serialCodes ?. includes(currentProduct) ? " CB: " + currentProduct : "")
-                      } </Box>
-                      {
-                      !searchByPackage && (
-                        <>
-                          <Typography variant="body2" color="text.secondary">
-                            {
-                            "STOCK: " + option.stock
-                          } </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {
-                            "ALMACEN: " + option.warehouse_description.toUpperCase()
-                          } </Typography>
-                        </>
-                      )
-                    } </Grid>
-                    <Grid item
-                      xs={1}>
-                      <Button variant="outlined"
-                        onMouseDown={
-                          (event) => {
-                            event.preventDefault();
-                            handleOpen(option);
-                          }
-                      }>
-                        ver stock
-                      </Button>
-                      {" "} </Grid>
-                  </Grid>
-                </Box>
-              );
-            }
-          }/>
-      </Grid>{/* <Grid item xs="auto">
+                        <Grid
+                          item
+                          xs
+                          sx={{
+                            width: 'calc(100% - 44px)',
+                            wordWrap: 'break-word',
+                          }}
+                        >
+                          <Box component="span" sx={{ fontWeight: 'regular' }}>
+                            {option.nombre +
+                              ' - CA: ' +
+                              option.codigoAnexo +
+                              (option.serialCodes?.includes(currentProduct)
+                                ? ' CB: ' + currentProduct
+                                : '')}{' '}
+                          </Box>
+                          {!searchByPackage && (
+                            <>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {'STOCK: ' + option.stock}{' '}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {'ALMACEN: ' +
+                                  option.warehouse_description.toUpperCase()}{' '}
+                              </Typography>
+                            </>
+                          )}{' '}
+                        </Grid>
+                        <Grid item xs={1}>
+                          <Button
+                            variant="outlined"
+                            onMouseDown={(event) => {
+                              event.preventDefault()
+                              handleOpen(option)
+                            }}
+                          >
+                            ver stock
+                          </Button>{' '}
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )
+                }}
+              />
+            </Grid>
+            {/* <Grid item xs="auto">
 								<Tooltip
 									title="Buscar por paquete"
 									placement="top"
@@ -1553,7 +1554,10 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 										// label="PAQUETES"
 									/>
 								</Tooltip>
-							</Grid> */} </Grid></Grid>{/* <Grid item xs={12} md={4} lg={4}>
+							</Grid> */}{' '}
+          </Grid>
+        </Grid>
+        {/* <Grid item xs={12} md={4} lg={4}>
 						<FormControl fullWidth size="small">
 							<InputLabel id="label-precio">Precio</InputLabel>
 							<Select
@@ -1574,7 +1578,8 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 								))}
 							</Select>
 						</FormControl>
-					</Grid> */}{/* <Grid item xs={12} md={8} lg={8}>
+					</Grid> */}
+        {/* <Grid item xs={12} md={8} lg={8}>
 						<FormControl fullWidth size="small">
 							<InputLabel id="label-serie">ALMACEN</InputLabel>
 							<Select
@@ -1597,7 +1602,8 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 								))}
 							</Select>
 						</FormControl>
-					</Grid> */}{/* <Grid
+					</Grid> */}
+        {/* <Grid
 						container
 						item
 						xs={12}
@@ -1642,7 +1648,8 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 							divisa={divisa}
 							warehouses={warehouses}
 						/>
-					</Grid> */}{/* {anchorEl && (
+					</Grid> */}
+        {/* {anchorEl && (
 						<Popper
 							open={
 								inputs.referenceDocument?.length ? true : false
@@ -1661,7 +1668,8 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 										?.series_number_attached_voucher}
 							</Box>
 						</Popper>
-					)} */}{/* <div className="product-wrapper-venta">
+					)} */}
+        {/* <div className="product-wrapper-venta">
 				<ProductsTable
 					inputs={inputs}
 					setInputs={setInputs}
@@ -1671,7 +1679,8 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 					warehouses={warehouses}
 					documents={documents}
 				/>
-			</div> */}{/* <div className="total-pay">
+			</div> */}
+        {/* <div className="total-pay">
 					<FormControlLabel
 						sx={{ height: "1.5em", fontWeight: "700" }}
 						control={
@@ -1739,9 +1748,10 @@ const NewSale = () => { // const { actualizarStock } = useStock();
 								parseFloat(total) + parseFloat(inputs.costbag)
 							).toFixed(2)}{" "}
 					</span>
-				</div> */} </Grid>
+				</div> */} 
+      </Grid>
+    </Box>
+  )
+}
 
-  );
-};
-
-export default NewSale;
+export default NewSale

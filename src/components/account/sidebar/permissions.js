@@ -10,6 +10,15 @@
 
 export const permissions = [
   {
+    title: 'administración',
+    path: '/administracion',
+    // icon: Isettings,
+    // bgColor: "hsl(0,0%,73%)",
+    // bgColorHover: "hsl(0,0%,83%)",
+    // size: "contain",
+    // position: "50% 30px",
+  },
+  {
     title: 'usuarios',
     path: '/usuarios',
     // icon: Isettings,
@@ -51,13 +60,5 @@ export const permissions = [
     // size: "contain",
     // position: "50% 30px",
   },
-  {
-    title: 'planes-internet',
-    path: '/planes-internet',
-    // icon: Isettings,
-    // bgColor: "hsl(0,0%,73%)",
-    // bgColorHover: "hsl(0,0%,83%)",
-    // size: "contain",
-    // position: "50% 30px",
-  },
+  
 ]

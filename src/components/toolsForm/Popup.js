@@ -1,16 +1,17 @@
-import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Typography } from '@mui/material';
-import Controls from '../controls/Controls';
+import React from 'react'
+import { Dialog, DialogTitle, DialogContent, Typography } from '@mui/material'
+import Controls from '../controls/Controls'
 // import { makeStyles } from "@mui/styles";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Close'
 //import { makeStyles } from '@material-ui/core';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme) => ({
   dialogWrapper: {
-    paddingRight: 20,
-    // border: "5px solid rgb(177, 175, 175)",
-    // width: "50%",
+    //paddingRight: 20,
+    //border: '5px solid rgb(177, 175, 175)',
+    width: '100%',
+
     // [theme.breakpoints.down('sm')]: {
     //   width: '80%',
     // },
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   dialogTitle: {
     paddingRight: '0px',
   },
-}));
+}))
 
 // const classes = (theme) => ({
 //   dialogWrapper: {
@@ -53,17 +54,27 @@ const useStyles = makeStyles((theme) => ({
 // });
 
 export default function Popup(props) {
-  const { title, children, openPopup, setOpenPopup } = props;
-  const classes = useStyles();
+  const { title, children, openPopup, setOpenPopup } = props
+  const classes = useStyles()
 
   return (
     <Dialog
       open={openPopup}
       onClose={() => {
-        setOpenPopup(!openPopup);
+        setOpenPopup(!openPopup)
       }}
-      // maxWidth="md"
-      classes={{ paper: classes.dialogWrapper }}
+      //maxWidth="sm"
+    classes={{ paper: classes.dialogWrapper }}
+      // sx={{
+      //   border: '5px solid rgb(177, 175, 175)',
+      //   // width: {
+      //   //   xs: '100%',
+      //   //   sm: '100%',
+      //   //   md: '100%',
+      //   //   lg: '100%',
+      //   //   xl: '100%',
+      //   // },
+      // }}
     >
       <DialogTitle className={classes.dialogTitle}>
         <div style={{ display: 'flex' }}>
@@ -73,7 +84,7 @@ export default function Popup(props) {
           <Controls.ActionButton
             color="secondary"
             onClick={() => {
-              setOpenPopup(false);
+              setOpenPopup(false)
             }}
           >
             <CloseIcon />
@@ -82,5 +93,5 @@ export default function Popup(props) {
       </DialogTitle>
       <DialogContent dividers>{children}</DialogContent>
     </Dialog>
-  );
+  )
 }

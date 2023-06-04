@@ -3,7 +3,7 @@ import UserTable from "./ClientsTable.js.jsx";
 
 export default function Home() {
   return (
-    <div class="wrapper">
+    <div className="wrapper">
       <Sidebar/>
       <UserTable/>
     </div>
