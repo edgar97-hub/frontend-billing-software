@@ -106,6 +106,7 @@ export default function UserDialogForm(props) {
             label="precio"
             name="price"
             size="small"
+            type="number"
             value={values.price}
             onChange={handleInputChange}
             error={errors.price}
@@ -116,6 +117,7 @@ export default function UserDialogForm(props) {
             label="mbps"
             name="mbps"
             size="small"
+            type="number"
             value={values.mbps}
             onChange={handleInputChange}
             error={errors.mbps}

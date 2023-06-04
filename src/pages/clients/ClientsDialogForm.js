@@ -16,6 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 import TextField from '@mui/material/TextField'
+import { getPlansInternet } from './apis'
 
 const initialFValues = {
   id: 0,
@@ -43,6 +44,7 @@ export default function UserDialogForm(props) {
   } = props
   const [showPassword, setShowPassword] = useState(false)
   const handleClickShowPassword = () => setShowPassword(!showPassword)
+  const [plansInternet, setPlansInternet] = useState([])
 
   const validate = (fieldValues = values) => {
     let temp = { ...errors }
@@ -102,7 +104,21 @@ export default function UserDialogForm(props) {
     }
   }
 
+  async function loadplansInternet() {
+    var response = await getPlansInternet()
+    console.log(response)
+
+    response = response.map((value) => {
+      return {
+        id: value.planType,
+        title: value.planType,
+      }
+    })
+    setPlansInternet(response)
+    console.log(response)
+  }
   useEffect(() => {
+    loadplansInternet()
     if (recordForEdit != null) {
       setValues({
         ...recordForEdit,
@@ -201,6 +217,7 @@ export default function UserDialogForm(props) {
             label="Numero de documento"
             name="documentNumber"
             size="small"
+            type="number"
             value={values.documentNumber}
             onChange={handleInputChange}
             error={errors.documentNumber}
@@ -229,7 +246,7 @@ export default function UserDialogForm(props) {
           />
         </Grid>
         <Grid item xs={6}>
-          <Controls.Input
+          {/* <Controls.Select
             fullWidth
             label="plan-internet"
             name="plan"
@@ -237,7 +254,34 @@ export default function UserDialogForm(props) {
             value={values.plan}
             onChange={handleInputChange}
             error={errors.plan}
+          /> */}
+          <Controls.Select
+            name="plan"
+            label="plan-internet"
+            value={values.plan}
+            onChange={handleInputChange}
+            options={plansInternet}
+            error={errors.plan}
           />
+          {/* <FormControl size="small"
+          sx={
+            {
+              mt: 2,
+              width: '70%'
+            }
+        }>
+          <InputLabel id="demo-simple-select-label">Distrito</InputLabel>
+          <Select labelId="demo-simple-select-label"
+            value={
+              inputs.distrito
+            }
+            label="Distrito"
+            name="distrito"
+            onChange={handleChange}>
+            <MenuItem value={"Sachaca"}>Sachaca</MenuItem>
+            <MenuItem value={"Tiabaya"}>Tiabaya</MenuItem>
+          </Select>
+        </FormControl> */}
         </Grid>
         <Grid item xs={6}>
           <Controls.Input
