@@ -24,9 +24,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        <Route
+        {/*  <Route
           path="/usuarios"
           element={
             <Protected>
@@ -66,6 +66,7 @@ function App() {
             </Protected>
           }
         />
+
         <Route path="/import" element={<ImClients />} />
         <Route path="/administracion" element={<Administration />} />
       </Routes>

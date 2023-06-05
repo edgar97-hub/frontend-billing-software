@@ -291,7 +291,7 @@ function ResponsiveDrawer({ children }) {
   }
   function logout() {
     localStorage.removeItem('token')
-    navigate('/mi-portal')
+    navigate('/login')
   }
   const drawer = (
     <div

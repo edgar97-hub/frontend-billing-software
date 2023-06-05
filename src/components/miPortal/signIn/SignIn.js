@@ -41,25 +41,34 @@ export default function SignInSide() {
         email: data.get('email'),
         password: data.get('password'),
       }
-      console.log(values)
       var localhost = 'http://localhost:5001'
       var remoteServer = 'https://node-app-fiber-peru.onrender.com'
 
-     
-      var response = await axios.post(localhost + '/auth/login', values)
-      console.log(response.data)
-      if (response.data.token) {
+      console.log(values)
+      //var response = await axios.post(localhost + '/auth/login', values)
+
+      var response = await fetch('http://localhost:5001' + '/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      })
+      response = await response.json()
+
+      console.log(response)
+      if (response.token) {
         setNotify({
           isOpen: true,
           message: 'guardado con éxito',
           type: 'success',
         })
-        localStorage.setItem('token', response.data.token)
-        navigate('/usuarios')
+        localStorage.setItem('token', response.token)
+        navigate('/clientes')
       } else {
         setNotify({
           isOpen: true,
-          message: 'Credenciales incorrectas',
+          message: 'Credenciales no válidas',
           type: 'error',
         })
       }
