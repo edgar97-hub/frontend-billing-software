@@ -41,15 +41,15 @@ function App() {
               <Inquiries />
             </Protected>
           }
-        />
+        />*/}
         <Route
-          path="/nueva-venta"
+          path="/ventas"
           element={
             <Protected>
               <NewSale />
             </Protected>
           }
-        /> */}
+        /> 
         <Route
           path="/clientes"
           element={
@@ -66,7 +66,6 @@ function App() {
             </Protected>
           }
         />
-
         <Route path="/import" element={<ImClients />} />
         <Route path="/administracion" element={<Administration />} />
       </Routes>

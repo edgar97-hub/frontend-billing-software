@@ -1006,20 +1006,22 @@ const NewSale = () => {
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2}>
+    <Box sx={{ flexGrow: 1,padding:5 }}>
+      <Grid container spacing={1}>
         <Grid
           item
           xs={6}
           md={9}
-          lg={3}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 10,
-            border: '1px solid rgb(102, 97, 97)',
-          }}
+          lg={2}
+          //  style={{
+          //    display: 'flex',
+          //    justifyContent: 'center',
+          //    alignItems: 'center',
+          //    gap: 10,
+          //    border: '1px solid rgb(102, 97, 97)',
+          //  }}
+          style={{ border: '1px solid rgb(102, 97, 97)' }}
+
         >
           <Autocomplete
             disableClearable
@@ -1094,17 +1096,17 @@ const NewSale = () => {
                 }}
               />
             )}
-          />{' '}
+          /> 
           {/* <LookupDNIandRUC
 							inputs={inputs}
 							setInputs={setInputs}
-						/> */}{' '}
+						/> */} 
         </Grid>
         <Grid
           item
-          xs={12}
+          xs={4}
           md={3}
-          lg={3}
+          lg={2}
           style={{ border: '1px solid rgb(102, 97, 97)' }}
         >
           <LocalizationProvider dateAdapter={AdapterDayjs} size="small">
@@ -1166,48 +1168,9 @@ const NewSale = () => {
             />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12} md={4} lg={2}>
-          <FormControl size="small" fullWidth>
-            <InputLabel id="label-currency">Moneda</InputLabel>
-            <Select
-              size="small"
-              labelId="label-currency"
-              name="currency"
-              value={indexDivisa}
-              label="Moneda"
-              onChange={(e) => {
-                var module = 'Ventas'
-                var permission = 'Permitir cambiar de Moneda'
-
-                // if (
-                // service.checkPermision(
-                // currentUser.permissions,
-                // module,
-                // permission
-                // )
-                // ) {
-                // inputs.voucher_identification_data.divisa =
-                // divisa[e.target.value];
-                // // console.log(divisa[e.target.value]);
-                // setIndexDivisa(e.target.value);
-                // // inputs.voucher_identification_data.divisa = e.target.value;
-                // } else {
-                // alert("permiso insuficiente");
-                // }
-                setInputs((prevState) => ({
-                  ...prevState,
-                }))
-              }}
-            >
-              {divisa.map((element, index) => (
-                <MenuItem key={index} value={index}>
-                  {element.name}{' '}
-                </MenuItem>
-              ))}{' '}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={8} lg={8}>
+        
+        <Grid item xs={12}           style={{ border: '1px solid rgb(102, 97, 97)' }}
+ >
           {/* <Documents
 							inputs={inputs}
 							value={inputs}
@@ -1216,9 +1179,17 @@ const NewSale = () => {
 							setSerieObj={setSerieObj}
 							series={series}
 							setSeries={setSeries}
-						/> */}{' '}
+						/> */}
+            <TextField
+            size='small'
+  label="Tipo de documento"
+  // onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setName(event.target.value);
+  // }}
+/>
         </Grid>
-        <Grid item xs={12} md={4} lg={4}>
+        <Grid item xs={12}           style={{ border: '1px solid rgb(102, 97, 97)' }}
+>
           {/* <Serie
 							inputs={inputs}
 							documents={documents}
@@ -1226,7 +1197,28 @@ const NewSale = () => {
 							setSerieObj={setSerieObj}
 							series={series}
 							setSeries={setSeries}
-						/> */}{' '}
+						/> */}
+             <TextField
+            size='small'
+  label="Serie"
+  
+/>
+        </Grid>
+        <Grid item xs={12}           style={{ border: '1px solid rgb(102, 97, 97)' }}
+>
+          {/* <Serie
+							inputs={inputs}
+							documents={documents}
+							serieObj={serieObj}
+							setSerieObj={setSerieObj}
+							series={series}
+							setSeries={setSeries}
+						/> */}
+             <TextField
+            size='small'
+  label="Numero"
+  
+/>
         </Grid>
         {/* {!serieObj.desde && !serieObj.hasta && series.length > 0 && (
           <TextField

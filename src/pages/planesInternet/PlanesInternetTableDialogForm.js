@@ -75,14 +75,14 @@ export default function UserDialogForm(props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid
-        container
-        spacing={1}
+       container
+        spacing={2}
         direction="column"
         justifyContent="center"
-        alignItems="center"
       >
         <Grid item xs={6}>
           <Controls.Input
+          fullWidth
             name="planType"
             size="small"
             label="tipo plan"
@@ -93,6 +93,7 @@ export default function UserDialogForm(props) {
         </Grid>
         <Grid item xs={6}>
           <Controls.Input
+          fullWidth
             name="description"
             size="small"
             label="descripcion"
@@ -103,6 +104,7 @@ export default function UserDialogForm(props) {
         </Grid>
         <Grid item xs={6}>
           <Controls.Input
+          fullWidth
             label="precio"
             name="price"
             size="small"
@@ -114,6 +116,7 @@ export default function UserDialogForm(props) {
         </Grid>
         <Grid item xs={6}>
           <Controls.Input
+          fullWidth
             label="mbps"
             name="mbps"
             size="small"
